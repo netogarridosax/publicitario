@@ -1,40 +1,13 @@
 const http = require('http');
-<<<<<<< HEAD
-const IndexController = require('./controllers/indexController');
-const CalcularPlacaController = require('./controllers/CalcularPlacaController');
-const AutorController = require('./controllers/AutorController');
-const PlacaPublicitario = require('./lib/placaPublicitario');
-=======
 const { parse } = require('querystring');
-
->>>>>>> db6cbdbdb8254dd21f79e243bab2c7e2215ad932
 const PORT = 3000;
 
 const server = http.createServer(function (req, res) {
     let [url, queryString] = req.url.split('?');
-<<<<<<< HEAD
-    let controller;
-
-    if (url == '/index') {
-        controller = new IndexController();
-        controller.index(req, res);
-    } else if (url == '/PlacaPublicitario') {
-        controller = new CalcularPlacaController(req, res);
-        controller.calcularPlaca(req, res);
-    } else if (url == '/autor') {
-        controller = new AutorController();
-        controller.autor(req, res);
-    } else {
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.write('<html><head><meta charset="UTF-8"></head><body><h1>Não encontrado!</h1></body></html>');
-        res.end();
-    }
-});
-=======
 
     if (url == '/index') {
         index(req, res);
-    } else if (url == '/nome-seu-problema') {
+    } else if (url == '/PlacaPublicitario') {
         calcularProblema(req, res);
     } else if (url == '/autor') {
         autor(req, res);
@@ -54,7 +27,7 @@ function index(req, res) {
     res.write('<h1>Problema: Cálculo da Área de um Letreiro Publicitário em forma de pentágono.</h1>');
     res.write('<p><strong>Descrição do problema:</strong></p>');
     res.write('<p>Calcule a área de um letreiro publicitário em forma de pentágono. Se a área for maior que 20 metros quadrados, é um letreiro grande. Se for menor que 20 metros quadrados, é um letreiro pequeno.</p>');
-    res.write('<form action="nome-seu-problema" method="post">');
+    res.write('<form action="PlacaPublicitario" method="post">');
     res.write('<label>');
     res.write('<span>Nome</span>');
     res.write('<input name="nome">');
@@ -166,7 +139,6 @@ function naoEncontrado(req, res) {
     res.write('</html>');
     res.end();
 }
->>>>>>> db6cbdbdb8254dd21f79e243bab2c7e2215ad932
 
 server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
