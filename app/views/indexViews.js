@@ -1,3 +1,5 @@
+const Cabecalho = require('../lib/cabecalho');
+
 class IndexView {
     render() {
         return `
@@ -7,6 +9,7 @@ class IndexView {
           <meta charset="UTF-8">
         </head>
         <body>
+            ${Cabecalho.render()} 
             <h1>Problema: Cálculo da Área de um Letreiro Publicitário em forma de pentágono.</h1>
             <p><strong>Descrição do problema:</strong></p>
             <p>Calcule a área de um letreiro publicitário em forma de pentágono. Se a área for maior que 20 metros quadrados, é um letreiro grande. Se for menor que 20 metros quadrados, é um letreiro pequeno.</p>
@@ -21,7 +24,6 @@ class IndexView {
                     </label>
                     <button>Calcular</button>
                 </form>
-            <h4><footer>Desenvolvido por <a href="/autor">Desenvolvido por: Garrido</a></footer><h4>
         </body>
         </html>
       `;

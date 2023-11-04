@@ -1,5 +1,5 @@
 const { parse } = require('querystring');
-const CalcularPlacaView = require('../views/calcularplacaViews'); 
+const CalcularPlacaView = require('../views/calcularplacaViews');
 
 class CalcularPlacaController {
     constructor() {
@@ -33,7 +33,6 @@ class CalcularPlacaController {
         } else {
             res.writeHead(405, { 'Content-Type': 'text/html' });
             res.write('<h1>Método não permitido</h1>');
-            res.write(html);
             res.end();
         }
     }
