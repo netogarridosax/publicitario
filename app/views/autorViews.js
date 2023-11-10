@@ -1,3 +1,5 @@
+const Cabecalho = require('../lib/cabecalho');
+
 class AutorView {
     render() {
         return `
@@ -7,7 +9,7 @@ class AutorView {
                 <meta charset="UTF-8">
             </head>
                 <body>
-                    <a href="/index"><button>Início</button></a>
+                    ${Cabecalho.render()} 
                     <h1>Autor</h1>
                     <p>Nome: Francisco Lourival Garrido Neto</p>
                     <h2>Formações Acadêmicas</h2>

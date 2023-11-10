@@ -1,3 +1,5 @@
+const Cabecalho = require('../lib/cabecalho');
+
 const ejs = require('ejs');
 
 class CalcularPlacaView {
@@ -9,6 +11,7 @@ class CalcularPlacaView {
           <meta charset="UTF-8">
         </head>
         <body>
+            ${Cabecalho.render()}  
             <h1>Explicação da conta</h1>
             <p>A área de um pentágono regular pode ser calculada usando a fórmula:</p>
             <p><strong>Área = (5/4) * lado^2 * (1 / tan(π/5))</strong></p>
@@ -26,7 +29,6 @@ class CalcularPlacaView {
             <% } else { %>
                 <p>É uma placa pequena.</p>
             <% } %>
-            <h4><footer>Desenvolvido por <a href="/autor">Desenvolvido por: Garrido</a></footer><h4>
         </body>
         </html>
       `;
