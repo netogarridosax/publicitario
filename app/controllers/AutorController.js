@@ -1,16 +1,15 @@
-const AutorView = require('../views/autorViews');
+const utils = require("../lib/utils")
 
 class AutorController {
-    constructor() {
-        this.view = new AutorView();
-    }
-
     autor(req, res) {
-        const html = this.view.render();
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.write(html);
-        res.end();
+        let autor = {
+            nome: 'Garrido',
+            formacoes: [
+                'cursando técnico em informática para web'
+            ]
+        }
+
+        utils.renderizarEjs(res, './views/autor.ejs', autor);
     }
 }
-
 module.exports = AutorController;

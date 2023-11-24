@@ -1,55 +1,70 @@
 const http = require('http');
-const { parse } = require('querystring');
-const IndexController = require('./controllers/indexController');
-const CalcularPlacaController = require('./controllers/CalcularPlacaController');
+const PlacaController = require('./controllers/PlacaControllers');
+const EstaticoController = require('./controllers/EstaticoController');
 const AutorController = require('./controllers/AutorController');
-const PlacaPublicitarioController = require('./controllers/PlacaController');
-const UsuariosController = require('./controllers/UsuariosController');
-const UsuariosDao = require('./lib/UsuariosDao');
-const PORT = 3000;
+const AuthController = require('./controllers/AuthController');
+const PlacasDao = require('./lib/projeto/PlacasDao');
+const UsuariosController = require('./controllers/UsuariosControllers');
+const UsuariosDao = require('./lib/projeto/UsuariosDao');
 
 
+let placasDao = new PlacasDao();
 let usuariosDao = new UsuariosDao();
-let placaPublicitarioController = new PlacaPublicitarioController();
+let placaController = new PlacaController(placasDao); 
+let estaticoController = new EstaticoController();
+let autorController = new AutorController();
+let authController = new AuthController(usuariosDao);
 let usuariosController = new UsuariosController(usuariosDao);
 
 
+const PORT = 3000;
+const server = http.createServer((req, res) => {
+    let [url, querystring] = req.url.split('?');
+    let urlList = url.split('/');
+    url = urlList[1];
+    console.log ('url', url) 
+    let metodo = req.method;
 
-
-
-
-const server = http.createServer(function (req, res) {
-    let [url, queryString] = req.url.split('?');
-    let controller;
-
-    if (url == '/index') {
-        controller = new IndexController();
-        controller.index(req, res);
-    }
-    else if (url == '/PlacaPublicitario') {
-        controller = new CalcularPlacaController(req, res);
-        controller.calcularPlaca(req, res);
-    }
-    else if (url == '/autor') {
-        controller = new AutorController();
-        controller.autor(req, res);
-    }
-    else if (url == '/placaPublicitario' && req.method === 'GET') {
-        placaPublicitarioController.listar(req, res);
-    }
-    else if (url == '/placaPublicitario' && req.method === 'POST') {
-        placaPublicitarioController.inserir(req, res);
-    }
-    else if (url == '/placaPublicitario' && req.method === 'PUT') {
-        placaPublicitarioController.alterar(req, res);
-    }
-    else if (url == '/placaPublicitario' && req.method === 'DELETE') {
-        placaPublicitarioController.apagar(req, res);
-    }
-    else {
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.write('<html><head><meta charset="UTF-8"></head><body><h1>Não encontrado!</h1></body></html>');
-        res.end();
+    if (url === 'index') {
+        placaController.index(req, res);
+    } else if (url === 'area') {
+        placaController.area(req, res);
+    } else if (url === 'placas' && metodo === 'GET') {
+        authController.autorizar(req, res, function () {
+            placaController.listar(req, res);
+        }, ['admin', 'geral']);
+    } else if (url === 'placas' && metodo === 'POST') {
+        authController.autorizar(req, res, function () {
+            placaController.inserir(req, res);
+        }, ['admin', 'geral']);
+    } else if (url === 'placas' && metodo === 'PUT') {
+        authController.autorizar(req, res, function () {
+            placaController.alterar(req, res);
+        }, ['admin', 'geral']);
+    } else if (url === 'placas' && metodo === 'DELETE') {
+        authController.autorizar(req, res, function () {
+            placaController.apagar(req, res);
+        }, ['admin']);
+    } else if (url === 'usuarios' && metodo === 'GET') {
+        usuariosController.listar(req, res);
+    } else if (url === 'usuarios' && metodo === 'POST') {
+        usuariosController.inserir(req, res);
+    } else if (url === 'usuarios' && metodo === 'PUT') {
+        authController.autorizar(req, res, function () {
+            usuariosController.alterar(req, res);
+        }, ['admin', 'geral']);
+    } else if (url === 'usuarios' && metodo === 'DELETE') {
+        authController.autorizar(req, res, function () {
+            usuariosController.apagar(req, res);
+        }, ['admin']);
+    } else if (url === 'autor') {
+        autorController.autor(req, res);
+    } else if (url === 'login') {
+        authController.index(req, res);
+    } else if (url === 'logar') {
+        authController.logar(req, res);
+    } else {
+        estaticoController.naoEncontrado(req, res);
     }
 });
 

@@ -1,6 +1,6 @@
-const Usuario = require('../lib/usuario');
-const UsuariosDao = require('../lib/UsuariosDao');
-const utils = require('../models/ultils')
+const Usuario = require('../lib/projeto/usuario');
+const UsuariosDao = require('../lib/projeto/UsuariosDao');
+const utils = require('../lib/utils')
 
 class UsuarioController {
 
