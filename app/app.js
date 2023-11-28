@@ -6,6 +6,17 @@ const AuthController = require('./controllers/AuthController');
 const PlacasDao = require('./lib/projeto/PlacasDao');
 const UsuariosController = require('./controllers/UsuariosControllers');
 const UsuariosDao = require('./lib/projeto/UsuariosDao');
+const PlacasMysqlDao = require('./lib/projeto/PlacasMysqlDao');
+const UsuariosMysqlDao = require('./lib/projeto/UsuariosMysqlDao');
+const mysql = require('mysql');
+
+const pool  = mysql.createPool({
+    connectionLimit : 10,
+    host            : 'bd',
+    user            : process.env.MARIADB_USER,
+    password        : process.env.MARIADB_PASSWORD,
+    database        : process.env.MARIADB_DATABASE
+});
 
 
 let placasDao = new PlacasDao();
@@ -22,7 +33,6 @@ const server = http.createServer((req, res) => {
     let [url, querystring] = req.url.split('?');
     let urlList = url.split('/');
     url = urlList[1];
-    console.log ('url', url) 
     let metodo = req.method;
 
     if (url === 'index') {

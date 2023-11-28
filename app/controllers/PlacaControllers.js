@@ -22,15 +22,13 @@ class PlacasController {
             }
             let placa = new Placa();
             placa.nome = query.nome;
-            placa.lado = parseFloat(query.lado);
-             console.log ('area', placa)         
+            placa.lado = parseFloat(query.lado);        
             utils.renderizarEjs(res, './views/area.ejs', placa);
         })
     }
 
-    listar(req, res) {
+    async listar(req, res) {
         let placas = this.placasDao.listar();
-
         let dados = placas.map(placa => {
             return {
                 ...placa,
@@ -94,7 +92,6 @@ class PlacasController {
         let placa = new Placa(
             corpo.nome,
             parseFloat(corpo.lado),
-            corpo.senha,
             corpo.papel
         );
         return placa;

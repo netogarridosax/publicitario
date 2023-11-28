@@ -13,29 +13,23 @@ class AuthController {
 
     async logar(req, res) {
         let corpo = await utils.getCorpo(req);
-        console.log({ corpo });
-        try {
-            let usuario = await this.usuariosDao.autenticar(corpo.nome, corpo.senha);
-            console.log({ usuario });
-            if (usuario) {
-                console.log({ usuario });
-                let token = jwt.sign({
-                    ...usuario
-                }, this.SEGREDO_JWT);
-                utils.renderizarJSON(res, {
-                    token,
-                    mensagem: 'Usuário logado com sucesso!'
-                });
-            } else {
-                utils.renderizarJSON(res, {
-                    mensagem: 'Usuário ou senha inválidos!'
-                }, 401);
-            }
-        } catch (error) {
-            console.error(error);
+        console.log({corpo});
+        let usuario = await this.usuariosDao.autenticar(corpo.nome, corpo.senha);
+        console.log({usuario});
+        if (usuario) {
+            console.log({usuario});          
+            let token = jwt.sign({
+                ...usuario
+            }, this.SEGREDO_JWT);
             utils.renderizarJSON(res, {
-                mensagem: 'Erro durante a autenticação'
-            }, 500);
+                token,
+                mensagem: 'Usuário logado com sucesso!'
+            });
+        }
+        else {
+            utils.renderizarJSON(res, {
+                mensagem: 'Usuário ou senha inválidos!'
+            }, 401);
         }
     }
 
@@ -48,11 +42,13 @@ class AuthController {
         try {
             let usuario = jwt.verify(token, this.SEGREDO_JWT);
             req.usuario = usuario;
-            console.log({ usuario }, papeisPermitidos);
+            console.log({usuario}, papeisPermitidos);
+            console.log(usuario.papel);
 
-            if (papeisPermitidos.includes(usuario.papel) || papeisPermitidos.length == 0) {
+            if (papeisPermitidos.includes(usuario.papel)) {
                 proximoControlador();
-            } else {
+            }
+            else {
                 utils.renderizarJSON(res, {
                     mensagem: 'Não autorizado!'
                 }, 403);

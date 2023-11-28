@@ -1,5 +1,5 @@
-const Usuario = require("./usuario");
-const bcrypt = require('bcrypt');
+const Usuario = require("./usuario")
+const bcrypt = require('bcrypt')
 
 class UsuariosDao {
     constructor() {
@@ -35,9 +35,9 @@ class UsuariosDao {
             throw new Error('mensagem_papel_em_branco');
         }
     }
-    async autenticar(nome, senha) {
+    autenticar(nome, senha) {
         for (let usuario of this.listar()) {
-            if (usuario.nome == nome && await bcrypt.compare(senha, usuario.senha)) {
+            if (usuario.nome == nome && bcrypt.compareSync(senha, usuario.senha)) {
                 return usuario;
             }
         }

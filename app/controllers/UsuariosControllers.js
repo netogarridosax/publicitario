@@ -1,68 +1,79 @@
-const Usuario = require('../lib/projeto/usuario');
-const UsuariosDao = require('../lib/projeto/UsuariosDao');
-const utils = require('../lib/utils')
+const Usuario = require('./../lib/projeto/usuario');
+const utils = require('../lib/utils');
 
-class UsuarioController {
-
-    constructor() {
-      this.usuariosDao = new UsuariosDao();
+class UsuariosController {
+    constructor(usuariosDao) {
+        this.usuariosDao = usuariosDao;
     }
 
-    listar(req, res) {
-      let usuarios = this.usuariosDao.listar()
-      utils.renderizarJSON(res, usuarios)
-    }
+    async listar(req, res) {
+        let usuarios = await this.usuariosDao.listar();
 
+        let dados = usuarios.map(usuario => {
+            return {
+                ...usuario
+            };
+        })
+
+        utils.renderizarJSON(res, dados);
+    }
+    
     async inserir(req, res) {
-      try {
-          var body = await utils.getBody(req); 
-          let usuario = new usuario(body.lado)
-          this.usuariosDao.inserir(usuario);
-          utils.renderizarJSON(res,{ 
-              list: this.usuariosDao.listar(),
-              mensagem: 'mensagem_usuario_cadastrado'
-          });
-      } 
-      catch (e) {
-          utils.renderizarJSON(res, {
-              mensagem: e.message
-          }, 400);
-      }
+        let usuario = await this.getUsuarioDaRequisicao(req);
+        try {
+            usuario.id = await this.usuariosDao.inserir(usuario);
+            utils.renderizarJSON(res, {
+                usuario: {
+                    ...usuario
+                },
+                mensagem: 'mensagem_usuario_cadastrado'
+            });
+        } catch (e) {
+            utils.renderizarJSON(res, {
+                mensagem: e.message
+            }, 400);
+        }
     }
 
     async alterar(req, res) {
-      
-      try {
-        var body = await utils.getBody(req);
-        let usuario = new Usuario(body.lado)
-        this.usuariosDao.alterar(body.id, usuario) 
-        utils.renderizarJSON(res,{ 
-            list: this.usuariosDao.listar(),
-            mensagem: 'mensagem_usuario_alterado'
-          });
-      } 
-      catch (e) {
-          utils.renderizarJSON(res, {
-              mensagem: e.message
-          }, 400);
-      }
+        let usuario = await this.getUsuarioDaRequisicao(req);
+        let [ url, queryString ] = req.url.split('?');
+        let urlList = url.split('/');
+        url = urlList[1];
+        let id = urlList[2];
+        try {
+            this.usuariosDao.alterar(id, usuario);
+            utils.renderizarJSON(res, {
+                mensagem: 'mensagem_usuario_alterado'
+            });
+        } catch (e) {
+            utils.renderizarJSON(res, {
+                mensagem: e.message
+            }, 400);
+        }
+    }
+    
+    apagar(req, res) {
+        let [ url, queryString ] = req.url.split('?');
+        let urlList = url.split('/');
+        url = urlList[1];
+        let id = urlList[2];
+        this.usuariosDao.apagar(id);
+        utils.renderizarJSON(res, {
+            mensagem: 'mensagem_usuario_apagado',
+            id: id
+        });
     }
 
-    async apagar(req, res){
-      try {
-        var body = await utils.getBody(req);
-        this.usuariosDao.apagar(body.id) 
-        utils.renderizarJSON(res,{ 
-            list: this.usuariosDao.listar(),
-            mensagem: 'mensagem_usuario_excluido'
-          });
-      } 
-      catch (e) {
-          utils.renderizarJSON(res, {
-              mensagem: e.message
-          }, 400);
-      }
+    async getUsuarioDaRequisicao(req) {
+        let corpo = await utils.getCorpo(req);
+        let usuario = new Usuario(
+            corpo.nome,
+            corpo.senha,
+            corpo.papel
+        );
+        return usuario;
     }
 }
 
-module.exports = UsuarioController
+module.exports = UsuariosController;

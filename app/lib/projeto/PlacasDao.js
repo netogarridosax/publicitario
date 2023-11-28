@@ -31,9 +31,9 @@ class PlacasDao {
             throw new Error('mensagem_tamanho_invalido');
         }
     }
-    async autenticar(nome, senha) {
+    autenticar(nome, senha) {
         for (let placa of this.listar()) {
-            if (placa.nome == nome && await bcrypt.compare(senha, placa.senha)) {
+            if (placa.nome == nome && bcrypt.compareSync (senha, placa.senha)) {
                 return placa;
             }
         }
