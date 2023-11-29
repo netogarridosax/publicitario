@@ -9,7 +9,7 @@ CREATE TABLE usuarios (
     id_papel INT,
     FOREIGN KEY (id_papel) REFERENCES papeis(id)
 );
-CREATE TABLE poligonos (
+CREATE TABLE placas (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(45),
     lado VARCHAR(45)
