@@ -73,8 +73,8 @@ const server = http.createServer((req, res) => {
         authController.index(req, res);
     } else if (url === 'logar') {
         authController.logar(req, res);
-    } else {
-        estaticoController.naoEncontrado(req, res);
+    } else    {
+        estaticoController.procurar(req, res);   
     }
 });
 
